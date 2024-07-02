@@ -1,0 +1,285 @@
+ClassName                     ; DB_Attribut                   ; JS_Attribut                   
+------------------------------;-------------------------------;-----------------------------------
+
+------------------------------;-------------------------------;-----------------------------------
+;;
+TaAutAuthorization			; I_ID				; id
+TaAutAuthorization			; I_Aut_User		; uId
+TaAutAuthorization			; I_Aut_Role		; roleId
+TaAutAuthorization			; T_Aut_Right		; rights
+	
+TaAutRight			; I_ID				; id
+TaAutRight			; T_Name			; name
+TaAutRight			; T_Group			; grp
+TaAutRight			; T_Description		; descr
+
+TaAutRole			; I_ID				; id
+TaAutRole			; T_Name			; name
+TaAutRole			; T_Aut_Right		; rights
+TaAutRole			; T_Description		; descr
+------------------------------;-------------------------------;-----------------------------------
+TaAutConnHistory              ; I_ID                          ; id                            
+TaAutConnHistory              ; I_User                        ; uId                          
+TaAutConnHistory              ; D_Date                        ; dt                            
+TaAutConnHistory              ; T_Val                         ; val                           
+------------------------------;-------------------------------;-----------------------------------              
+TaAutUser                     ; I_ID                          ; id                                                 
+TaAutUser                     ; T_Login_01                    ; login01                         
+TaAutUser                     ; T_Pass_01                     ; pass01     
+TaAutUser                     ; T_Login_02                    ; login02                         
+TaAutUser                     ; T_Pass_02                     ; pass02                       
+TaAutUser                     ; T_Email                       ; email                         
+TaAutUser                     ; I_Status                      ; stat                          
+TaAutUser                     ; I_Type                        ; typ    
+TaAutUser                 	  ; T_Info_01                     ; info01
+TaAutUser                 	  ; T_Info_02                     ; info02
+TaAutUser                 	  ; T_Info_03                     ; info03
+TaAutUser                 	  ; T_Info_04                     ; info04
+TaAutUser                 	  ; T_Info_05                     ; info05                         
+TaAutUser                     ; D_Date_01         		      ; dt01
+TaAutUser                     ; D_Date_02         		      ; dt02
+TaAutUser                     ; D_Date_03         		      ; dt03                                
+TaAutUser                     ; I_Aut_User_01                 ; uId01
+TaAutUser                     ; I_Aut_User_02                 ; uId02
+TaAutUser                     ; I_Aut_User_03                 ; uId03  
+TaAutUser                  	  ; I_Per_Manager                 ; manId  
+TaAutUser                  	  ; I_Per_Person                  ; perId  
+TaAutUser                     ; O_Avatar	                  ; avatar                                                               
+TaAutUser                     ; O_Documents              	  ; files   
+TaAutUser                     ; O_Roles               	  	  ; roles  
+TaAutUser                     ; O_Rights	              	  ; rights  
+TaAutUser                     ; O_Per_Manager	              ; perMan  
+TaAutUser                     ; O_Per_Person	              ; perObj 
+TaAutUser                     ; O_Aut_Superior	              ; superior  
+;;
+------------------------------;-------------------------------;-----------------------------------
+TaPerPerson                   ; I_ID                          ; id                                                
+TaPerPerson                   ; I_Status                      ; stat                          
+TaPerPerson                   ; I_Type_01                     ; typ01                         
+TaPerPerson                   ; I_Type_02                     ; typ02                                                 
+TaPerPerson                   ; T_Code_01                     ; code01 
+TaPerPerson                   ; T_Code_02                     ; code02                          
+TaPerPerson                   ; T_Name_01                     ; name01                        
+TaPerPerson                   ; T_Name_02                     ; name02   
+TaPerPerson                   ; T_Name_03                     ; name03                                          
+TaPerPerson                   ; T_Info_01                     ; inf01                        
+TaPerPerson                   ; T_Info_02                     ; inf02                        
+TaPerPerson                   ; T_Info_03                     ; inf03                        
+TaPerPerson                   ; T_Info_04                     ; inf04                        
+TaPerPerson                   ; T_Info_05                     ; inf05                                               
+TaPerPerson                   ; D_Date_01                     ; dt01                         
+TaPerPerson                   ; D_Date_02                     ; dt02                         
+TaPerPerson                   ; D_Date_03                     ; dt03
+TaPerPerson                   ; I_Aut_User_01                 ; uId01
+TaPerPerson                   ; I_Aut_User_02                 ; uId02
+TaPerPerson                   ; O_Documents               	  ; files        
+TaPerPerson                   ; O_Properties               	  ; props
+TaPerPerson                   ; O_Positions               	  ; pos        
+TaPerPerson                   ; O_Informations                ; tpyInfos
+TaPerPerson                   ; O_Account_Ent                 ; account   
+TaPerPerson					  ; O_FullName             		  ; name
+TaPerPerson					  ; O_Short_Addr             	  ; shortAddr   
+TaPerPerson					  ; O_Long_Addr             	  ; longAddr 
+TaPerPerson					  ; O_Avatar             	      ; avatar   
+TaPerPerson					  ; I_Per_Manager             	  ; manId    
+------------------------------;-------------------------------;-----------------------------------
+
+TaTpyInformation              ; I_ID                          ; id      
+TaTpyInformation              ; I_Status                      ; stat                         
+TaTpyInformation              ; T_Info_01                     ; info01                        
+TaTpyInformation              ; T_Info_02                     ; info02                        
+TaTpyInformation              ; T_Info_03                     ; info03                        
+TaTpyInformation              ; T_Info_04                     ; info04                        
+TaTpyInformation              ; T_Info_05                     ; info05                        
+TaTpyInformation              ; T_Info_06                     ; info06                        
+TaTpyInformation              ; T_Info_07                     ; info07                        
+TaTpyInformation              ; T_Info_08                     ; info08                        
+TaTpyInformation              ; T_Info_09                     ; info09                        
+TaTpyInformation              ; T_Info_10                     ; info10 
+TaTpyInformation              ; F_Val_01                     ; val01                        
+TaTpyInformation              ; F_Val_02                     ; val02                        
+TaTpyInformation              ; F_Val_03                     ; val03                        
+TaTpyInformation              ; F_Val_04                     ; val04                        
+TaTpyInformation              ; F_Val_05                     ; val05                        
+TaTpyInformation              ; F_Val_06                     ; val06                        
+TaTpyInformation              ; F_Val_07                     ; val07                        
+TaTpyInformation              ; F_Val_08                     ; val08                        
+TaTpyInformation              ; F_Val_09                     ; val09                        
+TaTpyInformation              ; F_Val_10                     ; val10   
+TaTpyInformation              ; I_Entity_Type                ; entTyp  
+TaTpyInformation              ; I_Entity_ID                  ; entId  
+TaTpyInformation              ; I_Priority                    ; ord                       
+TaTpyInformation              ; D_Date_01                     ; dt01  
+TaTpyInformation              ; D_Date_02                     ; dt02  
+TaTpyInformation              ; I_Aut_User_01                 ; uId01  
+TaTpyInformation              ; I_Aut_User_02                 ; uId02                          
+TaTpyInformation              ; I_Type_01                     ; typ01                         
+TaTpyInformation              ; I_Type_02                     ; typ02          
+TaTpyInformation              ; I_Type_03                     ; typ03
+  
+-------------------------------;-------------------------------;----------------------------
+
+TaTpyDocument         ; I_ID                        ; id
+TaTpyDocument         ; I_Type_01                   ; typ01  
+TaTpyDocument         ; I_Type_02                   ; typ02  
+TaTpyDocument         ; I_Type_03                   ; typ03 
+TaTpyDocument         ; I_Status                    ; stat  
+TaTpyDocument         ; I_Priority                  ; ord  
+TaTpyDocument         ; F_Val_01                    ; val01  
+TaTpyDocument         ; F_Val_02                    ; val02  
+TaTpyDocument         ; T_Info_01                   ; filename  
+TaTpyDocument         ; T_Info_02                   ; path01  
+TaTpyDocument         ; T_Info_03                   ; path02  
+TaTpyDocument         ; T_Info_04                   ; path03  
+TaTpyDocument         ; T_Info_05                   ; path04  
+TaTpyDocument         ; T_Info_06                   ; info06 
+TaTpyDocument         ; T_Info_07                   ; info07 
+TaTpyDocument         ; T_Info_08                   ; info08 
+TaTpyDocument         ; T_Info_09                   ; info09 
+TaTpyDocument         ; T_Info_10                   ; info10 
+TaTpyDocument         ; D_Date_01                   ; dt01  
+TaTpyDocument         ; D_Date_02                   ; dt02  
+TaTpyDocument         ; I_Aut_User_01               ; usr01Id  
+TaTpyDocument         ; I_Aut_User_02               ; usr02Id  
+TaTpyDocument         ; I_Entity_ID                 ; entId  
+TaTpyDocument         ; I_Entity_Type               ; entType  
+TaTpyDocument         ; I_Parent_ID               	; parId                        
+
+ ------------------------------;-------------------------------;-----------------------------------
+TaSysLock				; I_ID                    	; id
+TaSysLock         		; D_Date_01               	; dt01
+TaSysLock         		; D_Date_02               	; dt02
+TaSysLock        	 	; I_Status                  ; stat  
+TaSysLock        	 	; I_Aut_User                ; uId  
+TaSysLock        	 	; I_Val_01                  ; val01  
+TaSysLock        	 	; I_Val_02                  ; val02  
+TaSysLock        	 	; T_Val_01                  ; sVal01  
+TaSysLock        	 	; T_Val_02                  ; sVal02 
+------------------------------;-------------------------------;-----------------------------------
+TaFinFinance                   ; I_ID                          ; id                                                
+TaFinFinance                   ; I_Status                      ; stat                          
+TaFinFinance                   ; I_Type_01                     ; typ01                         
+TaFinFinance                   ; I_Type_02                     ; typ02                                                 
+TaFinFinance                   ; T_Info_01                     ; inf01                        
+TaFinFinance                   ; T_Info_02                     ; inf02                        
+TaFinFinance                   ; T_Info_03                     ; inf03                        
+TaFinFinance                   ; T_Info_04                     ; inf04                        
+TaFinFinance                   ; T_Info_05                     ; inf05    
+TaFinFinance         		   ; F_Val_01      	        ; val01 
+TaFinFinance         			; F_Val_02     	 	        ; val02  
+TaFinFinance         			; F_Val_03               	; val03  
+TaFinFinance         			; F_Val_04               	; val04  
+TaFinFinance         			; F_Val_05               	; val05                                             
+TaFinFinance                   ; D_Date_01                     ; dt01                         
+TaFinFinance                   ; D_Date_02                     ; dt02                         
+TaFinFinance                   ; D_Date_03                     ; dt03
+TaFinFinance                   ; I_Aut_User_01                 ; uId01
+TaFinFinance                   ; I_Aut_User_02                 ; uId02
+TaFinFinance					  ; I_Per_Manager             	  ; manId    
+TaFinFinance					  ; I_Per_Person             	  ; perId 
+
+-------------------------------;-------------------------------;----------------------------
+TaTpyCategory                 ; I_ID                          ; id                            
+TaTpyCategory                 ; T_Name                        ; name                          
+TaTpyCategory                 ; T_Code                        ; code                          
+TaTpyCategory                 ; T_Description                 ; descr                         
+TaTpyCategory                 ; I_Per_Manager                 ; manId                    
+TaTpyCategory                 ; I_Type_00                 	  ; typ00  
+TaTpyCategory                 ; I_Type_01                 	  ; typ01  
+TaTpyCategory                 ; I_Type_02                 	  ; typ02  
+TaTpyCategory                 ; I_Parent          	  		  ; parId  
+TaTpyCategory                 ; O_Children                    ; child
+TaTpyCategory                 ; O_Parent_Name                 ; parName
+TaTpyCategory                 ; O_Documents                   ; files
+
+TaTpyCategoryEntity                 ; I_ID                    ; id 
+TaTpyCategoryEntity                 ; I_Entity_Type           ; eTyp  
+TaTpyCategoryEntity                 ; I_Entity_ID             ; eId  
+TaTpyCategoryEntity                 ; I_Tpy_Category          ; catId  
+
+
+-------------------------------;-------------------------------;----------------------------
+TaNsoPost                     ; I_ID                          ; id                            
+TaNsoPost                     ; F_Eval_01                     ; eval01                        
+TaNsoPost                     ; F_Eval_02                     ; eval02                        
+TaNsoPost                     ; F_Eval_03                     ; eval03                        
+TaNsoPost                     ; F_Eval_04                     ; eval04                        
+TaNsoPost                     ; F_Eval_05                     ; eval05                        
+TaNsoPost                     ; T_Ref                         ; ref                           
+TaNsoPost                     ; T_Title                       ; title                         
+TaNsoPost                     ; T_Content_01                  ; cont01                        
+TaNsoPost                     ; T_Content_02                  ; cont02                        
+TaNsoPost                     ; T_Content_03                  ; cont03                        
+TaNsoPost                     ; T_Content_04                  ; cont04                        
+TaNsoPost                     ; T_Content_05                  ; cont05  
+TaNsoPost                     ; T_Content_06                  ; cont06                        
+TaNsoPost                     ; T_Content_07                  ; cont07                        
+TaNsoPost                     ; T_Content_08                  ; cont08                        
+TaNsoPost                     ; T_Content_09                  ; cont09                        
+TaNsoPost                     ; T_Content_10                  ; cont10                         
+TaNsoPost                     ; I_Type_01                     ; typ01    
+TaNsoPost                     ; I_Type_02                     ; typ02     
+TaNsoPost                     ; I_Type_03                     ; typ03                
+TaNsoPost                     ; I_Status                      ; stat                          
+TaNsoPost                     ; T_Comment                     ; cmt                           
+TaNsoPost                     ; D_Date_New                    ; dtAdd                         
+TaNsoPost                     ; D_Date_Mod                    ; dtMod                         
+TaNsoPost                     ; I_Aut_User_New                ; autUser                       
+TaNsoPost                     ; I_Nb_Resp                     ; nbResp                        
+TaNsoPost                     ; I_Parent                      ; parent                        
+TaNsoPost                     ; I_Entity_Type                 ; entTyp                     
+TaNsoPost                     ; I_Entity_ID                   ; entId 
+
+TaNsoPost                     ; T_Property_01                 ; prop01                        
+TaNsoPost                     ; T_Property_02                 ; prop02                        
+TaNsoPost                     ; T_Property_03                 ; prop03                        
+TaNsoPost                     ; T_Property_04                 ; prop04
+   
+TaNsoPost                    ; O_Documents                	  ; files 
+TaNsoPost					 ; O_User						  ; user
+TaNsoPost					 ; O_Login						  ; login   
+TaNsoPost					 ; O_Login						  ; login
+TaNsoPost                    ; O_Translations                 ; transl
+TaNsoPost                    ; O_Posts                        ; comment  
+TaNsoPost					 ; O_View						  ; viewNb 
+TaNsoPost					 ; O_Childs						  ; childs
+TaNsoPost                    ; O_Cats                		  ; cats 
+------------------------------;-------------------------------;-----------------------------------
+ViNsoPost                     ; I_ID                          ; id                            
+ViNsoPost                     ; F_Eval_01                     ; eval01                        
+ViNsoPost                     ; F_Eval_02                     ; eval02                        
+ViNsoPost                     ; F_Eval_03                     ; eval03                        
+ViNsoPost                     ; F_Eval_04                     ; eval04                        
+ViNsoPost                     ; F_Eval_05                     ; eval05                        
+ViNsoPost                     ; T_Ref                         ; ref                           
+ViNsoPost                     ; T_Title                       ; title                         
+ViNsoPost                     ; T_Content_01                  ; cont01                        
+ViNsoPost                     ; T_Content_02                  ; cont02                        
+ViNsoPost                     ; T_Content_03                  ; cont03                        
+ViNsoPost                     ; T_Content_04                  ; cont04                        
+ViNsoPost                     ; T_Content_05                  ; cont05                        
+ViNsoPost                     ; I_Type_01                     ; typ01    
+ViNsoPost                     ; I_Type_02                     ; typ02     
+ViNsoPost                     ; I_Type_03                     ; typ03                           
+ViNsoPost                     ; I_Status                      ; stat                          
+ViNsoPost                     ; T_Comment                     ; cmt                           
+ViNsoPost                     ; D_Date_New                    ; dtAdd                         
+ViNsoPost                     ; D_Date_Mod                    ; dtMod                         
+ViNsoPost                     ; I_Aut_User_New                ; autUser                       
+ViNsoPost                     ; I_Nb_Resp                     ; nbResp                        
+ViNsoPost                     ; I_Parent                      ; parent                        
+ViNsoPost                     ; I_Entity_Type                 ; entTyp                     
+ViNsoPost                     ; I_Entity_ID                   ; entId 
+ViNsoPost                     ; T_Entity_Title                ; entTitle
+ViNsoPost                     ; I_Type_01                     ; typ01    
+ViNsoPost                     ; I_Type_02                     ; typ02  
+ViNsoPost                     ; T_Property_01                 ; prop01                        
+ViNsoPost                     ; T_Property_02                 ; prop02                        
+ViNsoPost                     ; T_Property_03                 ; prop03                        
+ViNsoPost                     ; T_Property_04                 ; prop04 
+ViNsoPost                     ; T_Avatar                      ; avatar
+ViNsoPost                     ; T_Type_Avatar                 ; typAvatar
+ViNsoPost				      ; T_Avatar_User				  ; avatarUser
+ViNsoPost    				  ; T_Name_User				  	  ; nameUser
+ViNsoPost                     ; O_Documents                	  ; files
+ViNsoPost                     ; O_Translations                ; transl

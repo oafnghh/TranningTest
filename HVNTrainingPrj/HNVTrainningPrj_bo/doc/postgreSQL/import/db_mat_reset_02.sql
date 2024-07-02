@@ -1,0 +1,3 @@
+delete from TA_TPY_CATEGORY_ENTITY;
+delete from TA_MAT_MATERIAL_DETAIL;
+delete from TA_MAT_MATERIAL;

@@ -1,0 +1,26 @@
+-- hnvNewLine.TA_CFG_GROUP definition
+DROP TABLE IF EXISTS TA_CFG_VALUE;
+CREATE TABLE TA_CFG_VALUE (
+  I_ID 				SERIAL PRIMARY KEY,
+  I_Type_01 		integer DEFAULT NULL,
+  I_Type_02 		integer DEFAULT NULL,
+  I_Status_01 		integer DEFAULT NULL,
+  I_Status_02 		integer DEFAULT NULL,
+  T_Name 			varchar(200) NOT NULL,
+  T_Code 			varchar(100) DEFAULT NULL,
+  T_Info_01 		text DEFAULT NULL,
+  T_Info_02 		text DEFAULT NULL,
+  T_Info_03 		text DEFAULT NULL,
+  
+  I_Parent 			integer DEFAULT NULL,
+  I_Per_Manager 	integer DEFAULT NULL,  
+  CONSTRAINT fk_TCVAL_01 FOREIGN KEY (I_Parent) REFERENCES TA_CFG_VALUE (I_ID) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ;
+
+CREATE INDEX CONCURRENTLY idx_TCVAL_01 ON TA_CFG_VALUE USING btree(I_Parent);
+CREATE INDEX CONCURRENTLY idx_TCVAL_03 ON TA_CFG_VALUE USING btree(T_Code);
+CREATE INDEX CONCURRENTLY idx_TCVAL_04 ON TA_CFG_VALUE USING btree(I_Type_01);
+
+COMMENT on column TA_CFG_VALUE.T_Info_01	is 'description';
+COMMENT on column TA_CFG_VALUE.T_Info_02	is 'Table value';
+COMMENT on column TA_CFG_VALUE.T_Info_03	is 'other value';

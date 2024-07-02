@@ -1,0 +1,360 @@
+package com.hnv.api.service.sub.aut;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletResponse;
+
+import com.hnv.api.def.DefAPI;
+import com.hnv.api.def.DefJS;
+import com.hnv.api.def.DefTime;
+import com.hnv.api.interf.IService;
+import com.hnv.api.main.API;
+import com.hnv.api.model.aut.TaAutUser;
+import com.hnv.api.model.per.TaPerPerson;
+import com.hnv.api.service.sub.ResultPagination;
+import com.hnv.common.tool.ToolData;
+import com.hnv.common.tool.ToolDatatable;
+import com.hnv.common.tool.ToolJSON;
+import com.hnv.common.tool.ToolLogServer;
+import com.hnv.common.tool.ToolSet;
+import com.hnv.common.util.CacheData;
+import com.hnv.data.json.JSONObject;
+import com.hnv.ec.api.service.per.ServicePersonDyn;	
+
+
+public class ServiceAutUserDyn implements IService {
+
+	//--------------------------------Service Definition----------------------------------
+	public static final String SV_MODULE 							= "EC_V3"					.toLowerCase();
+
+	public static final String SV_CLASS 							= "ServiceAutUserDyn"		.toLowerCase();
+
+	public static final String SV_LST						= "SVLst"			.toLowerCase(); 
+	public static final String SV_LST_FOR_CHAT				= "SVLstForChat"	.toLowerCase();
+	public static final String SV_LST_SHIPMENT				= "SVLstShipment"	.toLowerCase();
+	
+	//-------------------------Default Constructor - Required -------------------------------------
+	public ServiceAutUserDyn(){
+		ToolLogServer.doLogInf("----" + SV_CLASS + " is loaded -----");
+	}
+
+	//-----------------------------------------------------------------------------------------------
+
+	@Override
+	public void doService(JSONObject json, HttpServletResponse response) throws Exception {
+		String 		sv 		= API.reqSVFunctName(json);
+		TaAutUser 	user	= (TaAutUser) json.get("userInfo");
+
+		try {
+			if (sv.equals(SV_LST)){
+				doAutUserLst(user, json, response);
+			} else if (sv.equals(SV_LST_FOR_CHAT)){
+				doAutUserLstForChat(user, json, response);
+			} else if (sv.equals(SV_LST_SHIPMENT)){
+				doAutUserLstShipment(user, json, response);
+			} else {
+				API.doResponse(response, DefAPI.API_MSG_ERR_UNKNOW);
+			}
+
+		}catch(Exception e){
+			API.doResponse(response, DefAPI.API_MSG_ERR_API);
+		}
+	}
+
+	//---------------------------------------------------------------------------------------------------------------------------
+	private static Hashtable<String,Integer> mapCol = new Hashtable<String, Integer>(){
+		{
+			put("action"	, -1);
+			put("id"		, 0 );
+//			put("code"		, 1 );
+			put("name"		, 2 );
+			put("email"		, 3 );	    
+		}
+	};
+
+	
+
+	//---------------------------------------------------------------------------------------------------------------------------
+	private static CacheData<ResultPagination>		cache_rs 			= new CacheData<ResultPagination>	(100, DefTime.TIME_SLEEP_00_30_00_000); //30 minutes if project or epic
+	private static CacheData<ResultPagination>		cache_rs_chat 		= new CacheData<ResultPagination>	(100, DefTime.TIME_SLEEP_00_01_00_000); //30 s if task
+	private static CacheData<ResultPagination>		cache_rs_shipment 	= new CacheData<ResultPagination>	(100, DefTime.TIME_SLEEP_00_01_00_000); //30 minutes if project or epic
+
+	private static void doAutUserLst(TaAutUser user,  JSONObject json, HttpServletResponse response) throws Exception {
+		ResultPagination  	res = reqViAutUserLst(user, json, false); //and other params if necessary
+		if (res.reqList()==null || res.reqList().size()==0){
+			API.doResponse(response,ToolJSON.reqJSonString(DefJS.SESS_STAT, true, DefJS.SV_CODE, DefAPI.SV_CODE_API_NO));
+			return;
+		}
+		API.doResponse(response,ToolJSON.reqJSonString(		//filter,
+				DefJS.SESS_STAT		, true, 
+				DefJS.SV_CODE		, DefAPI.SV_CODE_API_YES,
+				DefJS.RES_DATA		, res 
+				));	
+	}
+	
+	private static void doAutUserLstForChat(TaAutUser user,  JSONObject json, HttpServletResponse response) throws Exception {
+		ResultPagination  	res = reqViAutUserLstForChat(user, json, true); //and other params if necessary
+		if (res.reqList()==null){
+			API.doResponse(response,ToolJSON.reqJSonString(DefJS.SESS_STAT, true, DefJS.SV_CODE, DefAPI.SV_CODE_API_NO));
+			return;
+		}
+		API.doResponse(response,ToolJSON.reqJSonString(		//filter,
+				DefJS.SESS_STAT		, true, 
+				DefJS.SV_CODE		, DefAPI.SV_CODE_API_YES,
+				DefJS.RES_DATA		, res 
+				));	
+	}
+	
+	private static void doAutUserLstShipment(TaAutUser user,  JSONObject json, HttpServletResponse response) throws Exception {
+		ResultPagination  	res = reqViAutUserLstShipment(user, json, false); //and other params if necessary
+		if (res.reqList()==null || res.reqList().size()==0){
+			API.doResponse(response,ToolJSON.reqJSonString(DefJS.SESS_STAT, true, DefJS.SV_CODE, DefAPI.SV_CODE_API_NO));
+			return;
+		}
+		API.doResponse(response,ToolJSON.reqJSonString(		//filter,
+				DefJS.SESS_STAT		, true, 
+				DefJS.SV_CODE		, DefAPI.SV_CODE_API_YES,
+				DefJS.RES_DATA		, res 
+				));	
+	}
+
+	//-------------------------------------------------List dynamique filter mat--------------------------------------------------------------------------------------
+
+	private static 	ResultPagination reqViAutUserLst(TaAutUser user, JSONObject json, boolean forChat) throws Exception  {
+		//		Integer			manId		= ToolData.reqInt (json, "manId"		, null);
+		
+		Integer 		manId 		= user.reqPerManagerId();
+		if (user.canBeSuperAdmin()) manId = null;
+		
+		Integer 		begin		= ToolData.reqInt (json, "begin"		, 0	);
+		Integer 		number		= ToolData.reqInt (json, "number"		, 20);
+		Integer 		total		= ToolData.reqInt (json, "total"		, 0	);
+		String 			searchKey   = ToolData.reqStr (json, "searchKey"	, null);
+
+		String 			sortCol   	= ToolData.reqStr (json, "sortCol"		, "id");
+		Integer 		sortDir   	= ToolData.reqInt (json, "sortDir"		, 0);
+
+		
+		Set<Integer>	stats		= new HashSet<Integer>();
+		
+		Integer			stat		= ToolData.reqInt (json, "stat"		, null); 
+		if (stat!=null) stats.add(stat);
+		
+		String			statStr		= ToolData.reqStr (json, "stats"		, null); 
+		if (stats!=null) {
+			Set<Integer> set		= ToolSet.reqSetInt(statStr);
+			stats.addAll(set);
+		}
+		Integer			typ			= ToolData.reqInt (json, "typ"			, null); 
+
+		Boolean			buildInfo	= ToolData.reqBool (json, "buildInfo"	, false); 
+		Boolean         hardLoad    = ToolData.reqBool (json, "hardLoad"	, false); 
+
+		String keyWord 	= manId + "_" +  begin + "_" + number + "_" + total + "_" + searchKey + "_" + sortCol+ "_" + sortDir +"_" +  stat + "_" +  statStr + "_" + buildInfo;
+
+		CacheData<ResultPagination> cacheUsed = cache_rs;
+		
+		if(hardLoad) cacheUsed.doClear();
+		
+		ResultPagination rs =	cacheUsed.reqData(keyWord);
+
+		if(rs==null) {
+			Object[] dataTableOption 	= ToolDatatable.reqDataTableOption (json, null);
+			List<TaAutUser> usrList 	= reqAutUserListFilterDyn(dataTableOption, manId, stats, null, null, forChat);
+
+
+			if (usrList==null || usrList.size() ==0 ){
+				rs								= new ResultPagination(usrList, 0, 0, 0);
+			}else {
+				//---build avatar-----
+				ServicePersonDyn.reqUserListAvatar(usrList);
+//				DocTool.doBuildTpyDocuments(usrList, DBConfig.ID_TA_PER_PERSON, ServiceTpyDocument.NEW_TYPE_01_FILE_AVATAR, ServiceTpyDocument.TYPE_02_FILE_IMG, TaAutUser.ATT_O_AVATAR, false);
+				
+				if(buildInfo)	reqPersonInfo(usrList);
+				
+				if (total == 0 )	total		= reqUserFilterListDynCount(dataTableOption, manId, stats, null, typ, forChat);
+				rs								= new ResultPagination(usrList, total, begin, number);
+			}
+
+			cacheUsed.doPut(keyWord, rs);			
+		} else {
+			ToolLogServer.doLogInf("---reqViPrjLst use cache-----");
+			cacheUsed.doCheckIfOld(keyWord); 
+		}
+
+		return rs;
+
+	}
+	
+	private static void reqPersonInfo(List<TaAutUser> usrList) throws Exception {
+		Set<Integer> setPer = ToolSet.reqSetInt(usrList, TaAutUser.ATT_I_PER_PERSON);
+		if(!setPer.isEmpty()) {
+			List<TaPerPerson> lstPer = TaPerPerson.DAO.reqList_In(TaPerPerson.ATT_I_ID, setPer);
+			if(lstPer != null && lstPer.size() > 0) {
+				Map<Integer, TaPerPerson> mapPer = new HashMap<Integer, TaPerPerson>();	
+				for(TaPerPerson p : lstPer) {
+					mapPer.put(p.reqID(), p);
+				}
+				for(TaAutUser u : usrList) {
+					u.reqSet(TaAutUser.ATT_O_PERSON, mapPer.get(u.req(TaAutUser.ATT_I_PER_PERSON)));
+				}
+			}
+		}
+	}
+	
+	private static List<TaAutUser> reqAutUserListFilterDyn(Object[] dataTableOption, Integer manId, Set<Integer> status, Integer supID, Integer typ, boolean forChat) throws Exception {
+		List<String>			searchKey				= (List<String>)dataTableOption[0];
+		int 		begin 		= (int)	dataTableOption[1];
+		int 		number 		= (int)	dataTableOption[2]; 
+		int 		sortCol 	= (int)	dataTableOption[3]; 
+		int 		sortTyp 	= (int)	dataTableOption[4];
+
+		String sortColName = null;
+		String sortDir	   = null;
+
+		switch(sortCol) {
+		case 0: sortColName = TaAutUser.ATT_I_ID; break;	
+		case 2: sortColName = TaAutUser.ATT_T_LOGIN; break;
+		case 3: sortColName = TaAutUser.ATT_T_EMAIL; break;
+		default: sortColName = TaAutUser.ATT_T_LOGIN; break;
+		}
+
+		if (sortColName != null) {
+			switch(sortTyp) {
+			case 0: sortDir = "ASC"; break;
+			case 1: sortDir = "DESC"; break;								
+			}
+		}
+
+		List<TaAutUser> lst = TaAutUser.reqListUsrFilter(begin, number,  sortColName, sortDir, searchKey, manId,  status, supID, typ, forChat);
+		
+		for (TaAutUser u: lst) {
+			u.reqSet(TaAutUser.ATT_T_PASS, null);
+		}
+		return lst;
+	}
+
+	private static Integer reqUserFilterListDynCount(Object[] dataTableOption, Integer manId, Set<Integer> status, Integer supID, Integer typ, boolean forChat) throws Exception {
+		List<String>	searchKey				= (List<String>)dataTableOption[0];
+		Integer result = TaAutUser.reqCountUsrFilter(searchKey, manId , status, supID, typ, forChat).intValue();
+		return result;
+	}
+
+	private static 	ResultPagination reqViAutUserLstForChat(TaAutUser user, JSONObject json, boolean forChat) throws Exception  {
+		//		Integer			manId		= ToolData.reqInt (json, "manId"		, null);
+		Integer 		manId 		= user.reqPerManagerId();
+		if (user.canBeSuperAdmin()) manId = null;
+		
+		Integer 		begin		= ToolData.reqInt (json, "begin"		, 0	);
+		Integer 		number		= ToolData.reqInt (json, "number"		, 20);
+		Integer 		total		= ToolData.reqInt (json, "total"		, 0	);
+		String 			searchKey   = ToolData.reqStr (json, "searchKey"	, null);
+
+		String 			sortCol   	= ToolData.reqStr (json, "sortCol"		, "name");
+		Integer 		sortDir   	= ToolData.reqInt (json, "sortDir"		, 0);
+
+		Set<Integer>	stats		= new HashSet<Integer>();
+		
+		Integer			stat		= ToolData.reqInt (json, "stat"		, null); 
+		if (stat!=null) stats.add(stat);
+		
+		String			statStr		= ToolData.reqStr (json, "stats"		, null); 
+		if (statStr != null) {
+			Set<Integer> set		= ToolSet.reqSetInt(statStr);
+			stats.addAll(set);
+		}
+
+		Integer			typ			= ToolData.reqInt (json, "typ"			, null); 
+
+		String keyWord 	= manId + "_" +  begin + "_" + number + "_" + total + "_" + searchKey + "_" + sortCol+ "_" + sortDir +"_" +  stat+ "_" + statStr + "_" + typ;
+
+		CacheData<ResultPagination> cacheUsed = cache_rs_chat;		
+		ResultPagination rs =	cacheUsed.reqData(keyWord);
+
+		if(rs==null) {
+			Object[] dataTableOption 	= reqDataTableOption(searchKey, begin, number, sortCol, sortDir);
+			List<TaAutUser> usrList 	= reqAutUserListFilterDyn(dataTableOption, manId, stats, null, typ, forChat);
+
+			if (usrList==null || usrList.size() ==0 ){
+				rs								= new ResultPagination(usrList, 0, 0, 0);
+			}else {
+				//---build avatar-----
+				ServicePersonDyn.reqUserListAvatar(usrList);
+//				DocTool.doBuildTpyDocuments(usrList, DBConfig.ID_TA_PER_PERSON, ServiceTpyDocument.TYPE_01_FILE_AVATAR, ServiceTpyDocument.TYPE_02_FILE_IMG, TaAutUser.ATT_O_AVATAR, false);
+				
+				if (total == 0 )	total		= reqUserFilterListDynCount(dataTableOption, manId, stats, null, typ, forChat);
+				rs								= new ResultPagination(usrList, total, begin, number);
+			}
+			if (usrList!=null && usrList.size()>0)
+				cacheUsed.doPut(keyWord, rs);			
+		} else {
+			ToolLogServer.doLogInf("---reqViPrjLst use cache-----");
+			cacheUsed.doCheckIfOld(keyWord); 
+		}
+
+		return rs;
+
+	}
+	
+	private static 	ResultPagination reqViAutUserLstShipment(TaAutUser user, JSONObject json, boolean forChat) throws Exception  {
+		Integer 		manId 		= user.reqPerManagerId();
+		if (user.canBeSuperAdmin()) manId = null;
+		
+		Integer 		begin		= ToolData.reqInt (json, "begin"		, 0	);
+		Integer 		number		= ToolData.reqInt (json, "number"		, 20);
+		Integer 		total		= ToolData.reqInt (json, "total"		, 0	);
+		String 			searchKey   = ToolData.reqStr (json, "searchKey"	, null);
+
+		String 			sortCol   	= ToolData.reqStr (json, "sortCol"		, "id");
+		Integer 		sortDir   	= ToolData.reqInt (json, "sortDir"		, 1);
+
+		Set<Integer>	stats		= new HashSet<Integer>();
+		
+		Integer			stat		= ToolData.reqInt (json, "stat"		, null); 
+		if (stat!=null) stats.add(stat);
+		
+		String			statStr		= ToolData.reqStr (json, "stats"		, null); 
+		if (stats!=null) {
+			Set<Integer> set		= ToolSet.reqSetInt(statStr);
+			stats.addAll(set);
+		}
+		
+		Integer 		supID		= user.canBeSuperAdmin() ? null : user.reqId();
+		Integer			typ			= ToolData.reqInt (json, "typ"			, null);
+		
+		String 			keyWord 	= manId + "_" +  begin + "_" + number + "_" + total + "_" + searchKey + "_" + sortCol+ "_" + sortDir +"_" +  stat+ "_"  + supID + "_" + statStr + "_" + typ;
+
+		CacheData<ResultPagination> cacheUsed = cache_rs_shipment;		
+		ResultPagination rs =	cacheUsed.reqData(keyWord);
+
+		if(rs==null) {
+			Object[] dataTableOption 	= reqDataTableOption(searchKey, begin, number, sortCol, sortDir);
+			List<TaAutUser> usrList 	= reqAutUserListFilterDyn(dataTableOption, manId, stats, supID, typ, forChat);
+
+			if (usrList==null || usrList.size() ==0 ){
+				rs								= new ResultPagination(usrList, 0, 0, 0);
+			}else {
+				//---build avatar-----
+				ServicePersonDyn.reqUserListAvatar(usrList);
+				if (total == 0 )	total		= reqUserFilterListDynCount(dataTableOption, manId, stats, supID, typ, forChat);
+				rs								= new ResultPagination(usrList, total, begin, number);
+			}
+
+			cacheUsed.doPut(keyWord, rs);			
+		} else {
+			ToolLogServer.doLogInf("---reqViPrjLst use cache-----");
+			cacheUsed.doCheckIfOld(keyWord); 
+		}
+
+		return rs;
+
+	}
+	
+}

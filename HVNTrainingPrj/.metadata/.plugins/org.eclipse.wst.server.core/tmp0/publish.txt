@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Tue Jul 02 13:23:44 ICT 2024
+org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\ADMIN\\Downloads\\HNV-Demo-Prj\\HNV-Demo-Prj\\HNV-Demo-BE\\WebContent\\WEB-INF\\lib\\spring-web-5.1.3.RELEASE.jar=WEB-INF/lib/spring-web-5.1.3.RELEASE.jar
+org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\ADMIN\\Downloads\\HNV-Demo-Prj\\HNV-Demo-Prj\\HNV-Demo-BE\\WebContent\\WEB-INF\\lib\\tomcat-embed-websocket-9.0.13.jar=WEB-INF/lib/tomcat-embed-websocket-9.0.13.jar
